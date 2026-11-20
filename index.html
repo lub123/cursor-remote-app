@@ -183,7 +183,9 @@
   #gate { position: absolute; inset: 0; z-index: 20; background: #1e1e1e; display: none; flex-direction: column; gap: 12px; padding: calc(60px + env(safe-area-inset-top)) 24px 24px; overflow: auto; -webkit-overflow-scrolling: touch; }
   #gate.open { display: flex; }
   #gate h2 { margin: 0 0 6px; font-size: 20px; color: #eee; }
-  #gate input { font-size: 16px; padding: 11px; -webkit-user-select: text; user-select: text; touch-action: manipulation; }
+  #gateFields { display: flex; gap: 8px; }
+  #gate input { flex: 1; min-width: 0; font-size: 16px; padding: 11px; -webkit-user-select: text; user-select: text; touch-action: manipulation; }
+  #gatePaste { flex: none; padding: 11px 14px; }
   #gate button { padding: 11px; }
   #gateMsg { color: #aaa; line-height: 1.6; white-space: pre-line; }
   .primary-link { display: block; text-align: center; padding: 11px; border-radius: 8px; background: #0e639c; color: #fff; text-decoration: none; font-weight: 600; }
@@ -272,7 +274,10 @@
 <div id="gate">
   <h2>Cursor Remote</h2>
   <div id="gateMsg"></div>
-  <input id="gateInput" autocapitalize="off" autocorrect="off" spellcheck="false">
+  <div id="gateFields">
+    <input id="gateInput" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <button id="gatePaste" type="button">粘贴</button>
+  </div>
   <button id="gateBtn" class="primary"></button>
   <a id="gateApp" class="primary-link" hidden>在 App 中打开</a>
   <button id="gateRetry">重试</button>
@@ -324,7 +329,7 @@ function gate({ msg = '', err = false, input = null, retry = false, appLink = nu
   $('gateMsg').textContent = msg;
   $('gateMsg').className = err ? 'err' : '';
   const inp = $('gateInput');
-  inp.hidden = $('gateBtn').hidden = !input;
+  inp.hidden = $('gateBtn').hidden = $('gatePaste').hidden = $('gateFields').hidden = !input;
   gateSubmit = input?.submit || null;
   if (input) {
     inp.value = '';
@@ -343,6 +348,19 @@ function gate({ msg = '', err = false, input = null, retry = false, appLink = nu
 }
 const ungate = () => $('gate').classList.remove('open');
 $('gateBtn').onclick = () => gateSubmit?.($('gateInput').value.trim());
+// iPhone 主屏幕图标里长按输入框不会出现粘贴菜单；点按钮才会弹出系统的「允许粘贴」。
+$('gatePaste').onclick = async () => {
+  try {
+    const text = (await navigator.clipboard.readText()).trim();
+    if (!text) return;
+    $('gateInput').value = text;
+    gateSubmit?.(text);
+  } catch {
+    $('gateMsg').textContent = '没能读取剪贴板。点「粘贴」后，请在系统提示里选择「允许粘贴」。';
+    $('gateMsg').className = 'err';
+    $('gateInput').focus({ preventScroll: true });
+  }
+};
 $('gateInput').onkeydown = e => { if (e.key === 'Enter') $('gateBtn').click(); };
 // iOS won't focus an input on a fixed page by itself, so a tap never opens the keyboard or the paste menu.
 let gateTouchAt = 0;
@@ -418,8 +436,10 @@ function deviceName() {
 }
 
 function showUnpaired(msg = '') {
+  const home = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
   gate({
-    msg: (msg ? msg + '\n\n' : '') + '这台设备还没有配对。\n在电脑上运行 npm run pair，用手机扫码；或者把链接复制过来粘贴到下面。',
+    msg: (msg ? msg + '\n\n' : '') + '这台设备还没有配对。\n在电脑上运行 npm run pair，用手机扫码；或者把链接复制过来粘贴到下面。'
+      + (home ? '\n\n桌面图标和 Safari 的登录是分开的，需要在这个图标里再配对一次。iPhone 请点「粘贴」。' : ''),
     err: !!msg,
     input: { placeholder: '粘贴配对链接', button: '配对', submit: pastePair },
   });
