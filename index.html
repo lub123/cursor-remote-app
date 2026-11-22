@@ -250,11 +250,11 @@
 
 <footer>
   <div id="chatTools">
+    <button id="openProject">打开项目</button>
     <button id="pickMode" hidden></button>
     <button id="pickModel" hidden></button>
     <button id="pickHistory">历史</button>
     <button id="newChat">＋ 新建</button>
-    <button id="openProject">打开项目</button>
   </div>
   <div class="row">
     <textarea id="text" rows="1" placeholder="发给 Cursor Agent…" enterkeyhint="send"></textarea>
@@ -655,7 +655,8 @@ const KIND_TAG = { agents: 'Agents', ssh: 'SSH', local: '本地' };
 // Cursor titles look like "file.py — Folder [SSH: host]"; the window is identified by folder (+ host), not the open file.
 function winLabel(title) {
   const host = /\[SSH: ([^\]]+)\]/.exec(title)?.[1];
-  const parts = title.replace(/\s*\[SSH: [^\]]+\]\s*$/, '').split(' — ').map(s => s.replace(/^●\s*/, '').trim());
+  const rest = String(title || '').replace(/\s*\[SSH: [^\]]+\]\s*/g, ' ').replace(/\s+(?:—|-)\s+Cursor\s*$/, '').trim();
+  const parts = (rest.includes(' — ') ? rest.split(' — ') : rest.split(' - ')).map(s => s.replace(/^●\s*/, '').trim()).filter(Boolean);
   const folder = parts.pop() || title;
   return { name: host ? `${folder} · ${host}` : folder, file: parts.join(' — ') };
 }
