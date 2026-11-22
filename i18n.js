@@ -8,7 +8,7 @@ const I18N = (() => {
     '连接中…': 'Connecting…', '对话': 'Chat', '画面': 'Screen', '↑ 加载更早的消息': '↑ Load earlier messages',
     '没找到聊天面板。': 'No chat panel found.', '请在 Cursor 里打开 Agent 对话，或切到「画面」查看。': 'Open an Agent chat in Cursor, or switch to "Screen".',
     '↓ 最新': '↓ Latest', '聊天面板': 'Chat panel', '整个窗口': 'Whole window', '点击': 'Tap', '滚动': 'Scroll', '刷新': 'Refresh',
-    '回车': 'Enter', '⌘回车': '⌘Enter', '打开聊天': 'Open chat', '右键': 'Right-click', '历史': 'History', '＋ 新建': '+ New',
+    '回车': 'Enter', '⌘回车': '⌘Enter', '打开聊天': 'Open chat', '右键': 'Right-click', '历史': 'History', '＋ 新建': '+ New', '打开项目': 'Open project',
     '发给 Cursor Agent…': 'Message Cursor Agent…', '发送': 'Send', '换行': 'Wrap', '在 App 中打开': 'Open in app', '重试': 'Retry',
     '未连接': 'Not connected', '已连接': 'Connected', '断开，重连中…': 'Disconnected, reconnecting…', '已发送': 'Sent',
     '电脑端还没有发布地址（或还在用旧版本），请在电脑上重启服务': 'The computer has not published its address yet (or runs an old version). Restart the service on the computer.',
@@ -28,6 +28,15 @@ const I18N = (() => {
     '电脑不在线：可能关机、睡眠，或服务刚重启（新地址约 1 分钟后生效）。会自动重试…': 'Computer offline: it may be off, asleep, or the service just restarted (a new address takes about a minute). Retrying automatically…',
     '这台设备已被移除，请重新配对': 'This device was removed. Please pair again.',
     '切换 Cursor 窗口': 'Switch Cursor window', '没有找到窗口': 'No windows found', '本地': 'Local',
+    '打开没有打开的项目…': 'Open a project that isn’t open…',
+    '没有未打开的项目。在电脑上用 Cursor 打开过的文件夹会出现在这里': 'No unopened projects. Folders you have opened in Cursor on this computer show up here',
+    '只列出这台电脑上 Cursor 曾经打开过、当前没有窗口的项目。点一个会新开一个窗口并切过去。': 'Only folders Cursor has opened before on this computer, and that have no window now. Tap one to open it in a new window and switch to it.',
+    '读取项目…': 'Loading projects…', '正在打开项目…': 'Opening project…',
+    '已打开并切换到这个窗口': 'Opened, and switched to that window',
+    '这个项目已经开着，已切换过去': 'That project is already open; switched to it',
+    '没有看到新窗口。确认 Cursor 是用调试端口启动的': 'No new window appeared. Make sure Cursor was started with the debug port',
+    '找不到 Cursor。请先在电脑上用调试端口启动它': 'Cursor was not found. Start it with the debug port on the computer first',
+    '这个项目不在最近打开过的列表里': 'That project is not in the recently opened list',
     '「Agents」是 Cursor 专门跑 Agent 的窗口；其他是普通编辑器窗口（IDE 模式），SSH 远程窗口也在这里。': '"Agents" is Cursor\'s dedicated Agent window; the others are regular editor windows (IDE mode), including SSH remotes.',
     '选择模式': 'Mode', '选择模型': 'Model', '历史对话': 'Chat history', '菜单是空的，可能 Cursor 版本不同': 'The menu is empty; your Cursor version may differ',
     '更大上下文、更贵': 'Larger context, costs more', '参数': 'Params', '模型': 'Model', '改动会直接应用到电脑上 Cursor 的这个模型。': 'Changes apply directly to this model in Cursor on your computer.',
@@ -86,6 +95,11 @@ const I18N = (() => {
     '❓ Agent 在问你': '❓ The Agent is asking you', '其他…': 'Other…', '填入': 'Set', '跳过': 'Skip', '提交': 'Submit', '已跳过': 'Skipped', '已提交': 'Submitted',
     '这个问题已经不在了（可能已在电脑上回答）': 'That question is gone (maybe it was answered on the computer)',
     '保留': 'Keep', '撤销': 'Undo', '读取改动的文件…': 'Loading changed files…', '没有待处理的改动': 'No pending changes',
+    '当前分支': 'Current branch', '不在分支上': 'Not on a branch', '游离 HEAD': 'detached HEAD',
+    '当前分支，提交会进这个分支': 'Current branch; commits land here',
+    '当前不在任何分支，新的提交不会挂在分支上': 'Not on a branch; new commits are not attached to one',
+    '当前不在任何分支，提交容易丢。': 'Not on a branch; commits are easy to lose.',
+    '，保留或提交都会进这个分支。': '; keeping or committing lands on this branch.',
     '正在撤销…': 'Undoing…', '正在保留…': 'Keeping…', '处理中…': 'Working…',
     '点文件名查看内容。「保留」接受这个文件的改动，「撤销」把它恢复成改动前的样子。': 'Tap a file name to view it. "Keep" accepts the change to that file; "Undo" restores it to how it was before.',
     '文件会恢复成 Agent 改之前的样子。': 'The file goes back to how it was before the Agent changed it.',
@@ -124,6 +138,7 @@ const I18N = (() => {
     [/^排队中 (\d+) 条$/, 'Queued: $1'],
     [/^停止子 Agent「(.+)」？$/, 'Stop subagent "$1"?'],
     [/^❓ Agent 在问你（(\d+) 个问题）$/, '❓ The Agent is asking you ($1 questions)'],
+    [/^游离 ([0-9a-f]{4,40})$/, 'detached $1'],
     [/^改动了 1 个文件 ›$/, '1 file changed ›'],
     [/^改动了 (\d+) 个文件 ›$/, '$1 files changed ›'],
     [/^Agent 改动的文件（(\d+)）$/, 'Files changed by the Agent ($1)'],
@@ -140,6 +155,7 @@ const I18N = (() => {
     [/^图片太大（(.+)），请在电脑上看$/, 'Image too large ($1); view it on the computer'],
     [/^未知按键: (.*)$/, 'Unknown key: $1'],
     [/^未知指令: (.*)$/, 'Unknown command: $1'],
+    [/^没能启动 Cursor：(.*)$/, 'Could not start Cursor: $1'],
     [/^(.*)（(安卓 App|安卓浏览器|Mac 浏览器|浏览器)）$/, (m, a, b) => `${a} (${{ '安卓 App': 'Android app', '安卓浏览器': 'Android browser', 'Mac 浏览器': 'Mac browser', '浏览器': 'browser' }[b]})`],
   ];
 
@@ -154,7 +170,7 @@ const I18N = (() => {
   const tr = s => lang === 'zh' || s == null ? s : String(s).split('\n').map(line).join('\n');
 
   // Content mirrored from Cursor or the computer's files is never translated.
-  const SKIP = '#items, #vBody, #vName, #vPath, #titleText, .qt, [data-label] .lbl, [data-win] .lbl, .qnQ, .qnOpt span';
+  const SKIP = '#items, #vBody, #vName, #vPath, #titleText, .qt, [data-label] .lbl, [data-win] .lbl, [data-project] .lbl, .qnQ, .qnOpt span';
   const ATTRS = ['placeholder', 'title', 'aria-label'];
   const fix = node => {
     if (node.nodeType === 3) {
